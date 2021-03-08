@@ -1,0 +1,8 @@
+humanfriendly
+Python.js
+discord
+discord.py
+colorama
+pymongo
+dnspython
+PyYAML

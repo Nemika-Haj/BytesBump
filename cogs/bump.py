@@ -1,7 +1,6 @@
 import discord, io, traceback, json, os, asyncio
 
 from colorama import Fore, Style, init
-from dateparser import parse
 
 init(autoreset=True)
 
@@ -77,13 +76,13 @@ class Bumps(commands.Cog):
                 error = f"{e}"
                 value = io.StringIO().getvalue()
                 print(f"{Fore.RED}[ERROR] {Style.RESET_ALL}{error}\n{Fore.YELLOW}Error was recorded in {Fore.RED}error.log")
-                #with open("error.log", "w+") as f:
-                    #f.write(f"{value}{traceback.format_exc()}")
+                with open("error.log", "w+") as f:
+                    f.write(f"{value}{traceback.format_exc()}")
 
-                """
+
                 with open("cache_data.json", "w+") as f:
                     json.dump(entry, f, indent=4)
-                """
+
                 Servers(entry['_id']).delete()
 
                 try:
@@ -97,7 +96,7 @@ class Bumps(commands.Cog):
 
                 fail += 1
 
-                #os.remove("cache_data.json")
+                os.remove("cache_data.json")
         await wait_msg.delete()            
 
         done_message = await ctx.send(embed=discord.Embed(
