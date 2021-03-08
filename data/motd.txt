@@ -1,0 +1,2 @@
+This is a Message of the Day!
+This will appear after the bump message IF "show_motd" is set to true in settings.json!

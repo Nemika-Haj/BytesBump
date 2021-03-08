@@ -1,6 +1,7 @@
-import discord, io, traceback, json, os
+import discord, io, traceback, json, os, asyncio
 
 from colorama import Fore, Style, init
+from dateparser import parse
 
 init(autoreset=True)
 
@@ -23,10 +24,11 @@ class Bumps(commands.Cog):
     async def bump(self, ctx):
         server = Servers(ctx.guild.id)
         guild = ctx.guild
+        prefix = Servers(guild.id).getPrefix() if Servers(guild.id).hasPrefix else self.config["prefix"]
         
         if not server.get():
             ctx.command.reset_cooldown(ctx)
-            return await ctx.send(embed=Embeds(f"You must setup this server first! Use `{self.config['prefix']}setup` to do so!"))
+            return await ctx.send(embed=Embeds(f"You must setup this server first! Use `{prefix}setup` to do so!").error())
 
         servers = Servers().get_all()
 
@@ -89,12 +91,22 @@ class Bumps(commands.Cog):
 
                 #os.remove("cache_data.json")
         
-        return await ctx.send(embed=discord.Embed(
+        done_message = await ctx.send(embed=discord.Embed(
             title="⏫ Server Bumped",
             description=f"Your server was bumped to `{success+fail}` servers!\n✅ There were `{success}` successful bumps!\n❎ There were `{fail}` failed ones, they got booted from the Database!",
             color=discord.Color.green()
         )
         .set_footer(text=f"Powered by • {self.config['bot_name']}"))
+
+        if settings["show_motd"]:
+            await asyncio.sleep(settings["show_motd_wait"])
+            return await done_message.edit(embed=discord.Embed(
+                title="🗞️ Message Of The Day 🗞️",
+                description=Data("motd").read(),
+                color=discord.Color.green()
+            ))
+        else:
+            return
 
 def setup(bot):
     bot.add_cog(Bumps(bot))

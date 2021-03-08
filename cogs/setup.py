@@ -13,15 +13,20 @@ class BumpSetup(commands.Cog):
         global setting_up 
         setting_up = []
     
+    @commands.Cog.listener('on_guild_remove')
+    async def remove_guild(self, guild):
+        Servers(guild.id).delete()
+    
     @commands.guild_only()
     @commands.has_permissions(manage_guild=True)
     @commands.check(lambda ctx: ctx.guild not in setting_up)
     @commands.command()
     async def setup(self, ctx):
         guild = ctx.guild
+        prefix = Servers(guild.id).getPrefix() if Servers(guild.id).hasPrefix else self.config["prefix"]
 
         if Servers(guild.id).get():
-            return await ctx.send(embed=Embeds(f"This server was already setup! Use `{self.config['prefix']}delete` to initialize another setup!").error())
+            return await ctx.send(embed=Embeds(f"This server was already setup! Use `{prefix}delete` to initialize another setup!").error())
 
         embed = discord.Embed(
             title="🔄 Setting Up...",
