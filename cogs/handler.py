@@ -13,7 +13,7 @@ class ErrorHandler(commands.Cog):
             return await ctx.send(embed=embeds.Embeds(f"Missing `{error.param}` as a required argument.").error())
         elif isinstance(error, commands.CommandNotFound):
             return
-        elif isinstance(error, commands.CheckAnyFailure):
+        elif isinstance(error, commands.CheckFailure):
             return await ctx.send(embed=embeds.Embeds("You are not allowed to do this.").error())
         elif isinstance(error, commands.CommandOnCooldown):
             seconds = error.retry_after

@@ -5,7 +5,11 @@ from contextlib import redirect_stdout
 from core.files import Data
 from core import checks
 
+from colorama import init, Style, Fore
+
 from discord.ext import commands
+
+init(autoreset=True)
 
 config = Data("config").yaml_read()
 
@@ -13,7 +17,7 @@ bot = commands.Bot(command_prefix=config["prefix"], case_insensitive=True, help_
 
 @bot.event
 async def on_ready():
-    print("Bot is ready!")
+    print(f"{Fore.CYAN}[READY] {Style.RESET_ALL}Bot initialized!")
 
 @checks.manager()
 @bot.command(aliases=["e"])
@@ -100,9 +104,9 @@ async def _reload(ctx, *, module):
 for file in [i for i in os.listdir("cogs") if i.endswith(".py")]:
     try:
         bot.load_extension(f"cogs.{file[:-3]}")
-        print(f"Loaded {file}")
+        print(f"{Fore.GREEN}[SUCCESS] {Style.RESET_ALL}Successfully loaded {Fore.YELLOW}{file}")
     except Exception as e:
-        print(f"######\nFailed to load {file}: {e}\n######")
+        print(f"{Fore.RED}[ERROR] {Style.RESET_ALL}Failed to load {Fore.YELLOW}{file} due to an exception: {Style.DIM}{e}")
         
 
 dirs = [i for i in [x for x in os.walk("cogs")][0][1] if i.find(".") == -1]
@@ -111,8 +115,8 @@ for folder in dirs:
   for file in [i for i in os.listdir(f"cogs/{folder}") if i.endswith(".py")]:
       try:
           bot.load_extension(f"cogs.{folder}.{file[:-3]}")
-          print(f"Loaded {file}")
+          print(f"{Fore.GREEN}[SUCCESS] {Style.RESET_ALL}Successfully loaded {Fore.YELLOW}{file}")
       except Exception as e:
-          print(f"######\nFailed to load {folder}.{file}: {e}\n######")
+          print(f"{Fore.RED}[ERROR] {Style.RESET_ALL}Failed to load {Fore.YELLOW}{file} due to an exception: {Style.DIM}{e}")
 
 bot.run(config["token"])

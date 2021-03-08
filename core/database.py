@@ -16,11 +16,11 @@ class Servers:
 
     """
     Add a server to the database.
-    Expected params: Desc, Color, Listing, Invite
+    Expected params: Desc, Color, Listing, WebhookID
     """
 
     def add(self, **params):
-        kwargs['_id'] = self.server
+        params['_id'] = self.server
         self.col.insert_one(params)
 
     """
