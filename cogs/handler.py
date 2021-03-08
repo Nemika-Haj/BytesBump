@@ -1,4 +1,6 @@
 import discord
+
+from humanfriendly import format_timespan as ftime
 from core import embeds
 
 commands = discord.ext.commands
@@ -17,7 +19,7 @@ class ErrorHandler(commands.Cog):
             return await ctx.send(embed=embeds.Embeds("You are not allowed to do this.").error())
         elif isinstance(error, commands.CommandOnCooldown):
             seconds = error.retry_after
-            return await ctx.send(embed=embeds.Embeds(f"**You are on cooldown!** You can use this command again in **{seconds} seconds**.").error())
+            return await ctx.send(embed=embeds.Embeds(f"**You are on cooldown!** You can use this command again in **{ftime(seconds)}**.").error())
         else:
             await ctx.send(embed=embeds.Embeds("There was an error executing this command.").error(Error=error))
             raise error

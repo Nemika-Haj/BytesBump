@@ -94,7 +94,7 @@ class BumpSetup(commands.Cog):
 
         webhook = await listing.create_webhook(name=self.config['bot_name'])
 
-        Servers(ctx.guild.id).add(webhook=webhook.id, listing=listing.id, color=color, description=description)
+        Servers(ctx.guild.id).add(webhook=webhook.id, invite=invite.id, color=color, description=description)
 
         await ctx.send("Setup complete! Server added to DB and the webhook was created.")
 
@@ -152,9 +152,19 @@ class BumpSetup(commands.Cog):
                 check=lambda r,u: r.emoji == "♻️" and r.message.id == del_message.id and u.id == ctx.author.id
             )
         except asyncio.TimeoutError:
+            try:
+                wh = await self.bot.fetch_webhook(cache_data['webhook'])
+                await wh.delete()
+            except:
+                pass
             return await del_message.remove_reaction("♻️", self.bot.user)
 
         if Servers(ctx.guild.id).get():
+            try:
+                wh = await self.bot.fetch_webhook(cache_data['webhook'])
+                await wh.delete()
+            except:
+                pass
             return await ctx.send(embed=discord.Embed(
                 title="❎ Restore Failed",
                 description="The server seems to have been setup from the beginning, therefore restore is not possible.",

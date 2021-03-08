@@ -13,7 +13,9 @@ init(autoreset=True)
 
 config = Data("config").yaml_read()
 
-bot = commands.Bot(command_prefix=config["prefix"], case_insensitive=True, help_command=None, intents=discord.Intents.default())
+intents = discord.Intents.default(); intents.members = True
+
+bot = commands.Bot(command_prefix=config["prefix"], case_insensitive=True, help_command=None, intents=intents)
 
 @bot.event
 async def on_ready():
@@ -106,7 +108,7 @@ for file in [i for i in os.listdir("cogs") if i.endswith(".py")]:
         bot.load_extension(f"cogs.{file[:-3]}")
         print(f"{Fore.GREEN}[SUCCESS] {Style.RESET_ALL}Successfully loaded {Fore.YELLOW}{file}")
     except Exception as e:
-        print(f"{Fore.RED}[ERROR] {Style.RESET_ALL}Failed to load {Fore.YELLOW}{file} due to an exception: {Style.DIM}{e}")
+        print(f"{Fore.RED}[ERROR] {Style.RESET_ALL}Failed to load {Fore.YELLOW}{file} {Style.RESET_ALL}due to an exception: {Style.DIM}{e}")
         
 
 dirs = [i for i in [x for x in os.walk("cogs")][0][1] if i.find(".") == -1]
@@ -117,6 +119,6 @@ for folder in dirs:
           bot.load_extension(f"cogs.{folder}.{file[:-3]}")
           print(f"{Fore.GREEN}[SUCCESS] {Style.RESET_ALL}Successfully loaded {Fore.YELLOW}{file}")
       except Exception as e:
-          print(f"{Fore.RED}[ERROR] {Style.RESET_ALL}Failed to load {Fore.YELLOW}{file} due to an exception: {Style.DIM}{e}")
+          print(f"{Fore.RED}[ERROR] {Style.RESET_ALL}Failed to load {Fore.YELLOW}{file} {Style.RESET_ALL}due to an exception: {Style.DIM}{e}")
 
 bot.run(config["token"])
