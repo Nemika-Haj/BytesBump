@@ -99,7 +99,7 @@ class BumpSetup(commands.Cog):
 
         webhook = await listing.create_webhook(name=self.config['bot_name'])
 
-        Servers(ctx.guild.id).add(webhook=webhook.id, invite=invite.id, color=color, description=description)
+        Servers(ctx.guild.id).add(webhook=webhook.id, invite=invite.id, color=color, description=description, icon_url=ctx.guild.icon_url_as(static_format="png"))
 
         await ctx.send("Setup complete! Server added to DB and the webhook was created.")
 

@@ -23,6 +23,7 @@ class Bumps(commands.Cog):
     @commands.command()
     async def bump(self, ctx):
         server = Servers(ctx.guild.id)
+        server.update(icon_url=ctx.guild.icon_url_as(static_format="png"))
         guild = ctx.guild
         prefix = Servers(guild.id).getPrefix() if Servers(guild.id).hasPrefix else self.config["prefix"]
         
