@@ -10,6 +10,7 @@ class BumpSetup(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.config = Data("config").yaml_read()
+        self.settings = Data("settings").json_read()
         global setting_up 
         setting_up = []
     
@@ -99,9 +100,13 @@ class BumpSetup(commands.Cog):
 
         webhook = await listing.create_webhook(name=self.config['bot_name'])
 
-        Servers(ctx.guild.id).add(webhook=webhook.id, invite=invite.id, color=color, description=description, icon_url=ctx.guild.icon_url_as(static_format="png"))
+        Servers(ctx.guild.id).add(webhook=webhook.id, invite=invite.id, color=color, description=description, icon_url=str(ctx.guild.icon_url_as(static_format="png")), server_name=ctx.guild.name)
 
-        await ctx.send("Setup complete! Server added to DB and the webhook was created.")
+        return await ctx.send(embed=discord.Embed(
+            title="👌 Setup Complete",
+            description="The server was added to the Database and can now be bumped! Good luck on your server's growth! You can always use `=delete` to remove it." + (f"\nYour server was also added to our Server List! [Check it out!]({self.settings['serverlist_url']+'server/' + str(ctx.guild.id)}/)" if self.settings['enable_serverlist'] else ""),
+            color=discord.Color.green()
+        ))
 
     @commands.guild_only()
     @commands.has_permissions(manage_guild=True)

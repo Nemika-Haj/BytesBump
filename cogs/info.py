@@ -2,6 +2,7 @@ import discord
 
 from core.database import Servers
 from core.files import Data
+from core.embeds import Embeds
 
 commands = discord.ext.commands
 
@@ -33,6 +34,11 @@ class Info(commands.Cog):
             description=Data("help").read(),
             color=discord.Color.blurple()
         ))
+
+    @commands.guild_only()
+    @commands.command(aliases=["add"])
+    async def invite(self, ctx):
+        return await ctx.send(embed=Embeds(f"[Click here to invite me!](https://discord.com/api/oauth2/authorize?client_id={self.bot.user.id}&permissions=537152577&scope=bot)"))
 
 def setup(bot):
     bot.add_cog(Info(bot))

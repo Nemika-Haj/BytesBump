@@ -28,7 +28,7 @@ class Servers:
     Update a server in the database.
     """
     
-    def update(self, **checks):
+    def update(self, **params):
         self.col.update_one({
             "_id": self.server
         }, {

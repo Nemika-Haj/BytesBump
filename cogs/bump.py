@@ -23,13 +23,20 @@ class Bumps(commands.Cog):
     @commands.command()
     async def bump(self, ctx):
         server = Servers(ctx.guild.id)
-        server.update(icon_url=ctx.guild.icon_url_as(static_format="png"))
         guild = ctx.guild
         prefix = Servers(guild.id).getPrefix() if Servers(guild.id).hasPrefix else self.config["prefix"]
         
         if not server.get():
             ctx.command.reset_cooldown(ctx)
             return await ctx.send(embed=Embeds(f"You must setup this server first! Use `{prefix}setup` to do so!").error())
+
+        wait_msg = await ctx.send(embed=discord.Embed(
+            title="⏳ Bumping...",
+            description="Please wait while we're sending out the bumps!",
+            color=discord.Color.orange()
+        ))
+
+        server.update(icon_url=str(ctx.guild.icon_url_as(static_format="png")), server_name=ctx.guild.name)
 
         servers = Servers().get_all()
 
@@ -91,7 +98,8 @@ class Bumps(commands.Cog):
                 fail += 1
 
                 #os.remove("cache_data.json")
-        
+        await wait_msg.delete()            
+
         done_message = await ctx.send(embed=discord.Embed(
             title="⏫ Server Bumped",
             description=f"Your server was bumped to `{success+fail}` servers!\n✅ There were `{success}` successful bumps!\n❎ There were `{fail}` failed ones, they got booted from the Database!",
