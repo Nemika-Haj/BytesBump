@@ -24,7 +24,7 @@ class Bumps(commands.Cog):
         server = Servers(ctx.guild.id)
         guild = ctx.guild
         prefix = Servers(guild.id).getPrefix() if Servers(guild.id).hasPrefix else self.config["prefix"]
-        
+
         if not server.get():
             ctx.command.reset_cooldown(ctx)
             return await ctx.send(embed=Embeds(f"You must setup this server first! Use `{prefix}setup` to do so!").error())
@@ -41,6 +41,8 @@ class Bumps(commands.Cog):
 
         success, fail = 0, 0
 
+
+        invite_channel = self.bot.get_channel(server.get()['invite'])
         invite = await invite_channel.create_invite(max_uses=0, max_age=0, unique=False)
 
         embed = discord.Embed(
@@ -61,7 +63,6 @@ class Bumps(commands.Cog):
         for entry in servers:
             try:
                 webhook = await self.bot.fetch_webhook(entry['webhook'])
-                invite_channel = self.bot.get_channel(entry['invite'])
 
                 await webhook.send(
                     username=self.config['bot_name'],
@@ -95,7 +96,7 @@ class Bumps(commands.Cog):
                 fail += 1
 
                 os.remove("cache_data.json")
-        await wait_msg.delete()            
+        await wait_msg.delete()
 
         done_message = await ctx.send(embed=discord.Embed(
             title="⏫ Server Bumped",
