@@ -41,29 +41,27 @@ class Bumps(commands.Cog):
 
         success, fail = 0, 0
 
+        invite = await invite_channel.create_invite(max_uses=0, max_age=0, unique=False)
+
+        embed = discord.Embed(
+            title=guild.name,
+            description=server.get()['description'],
+            color=discord.Color(value=server.get()['color']),
+            url=invite.url
+        )
+
+        embed.add_field(name="🌍 Members", value=len(guild.members))
+        embed.add_field(name="🤣 Emojis", value=f"{len(guild.emojis)}/{guild.emoji_limit}")
+        embed.add_field(name="💎 Boost Tier", value=f"Tier {guild.premium_tier} ({guild.premium_subscription_count} Boosts)")
+        embed.add_field(name="👑 Owner", value=str(guild.owner))
+        embed.add_field(name="🔗 Invite", value=f"[Click to join!]({invite.url})")
+        embed.set_thumbnail(url=guild.icon_url_as(static_format="png"))
+        embed.set_footer(text=f"Powered by • {self.config['bot_name']}")
+
         for entry in servers:
             try:
-                server = self.bot.get_guild(entry['_id'])
                 webhook = await self.bot.fetch_webhook(entry['webhook'])
                 invite_channel = self.bot.get_channel(entry['invite'])
-                
-                invite = await invite_channel.create_invite(max_uses=0, max_age=0, unique=False)
-
-                embed = discord.Embed(
-                    title=guild.name,
-                    description=entry['description'],
-                    color=discord.Color(value=entry['color']),
-                    url=invite.url
-                )
-
-                embed.add_field(name="🌍 Members", value=len(guild.members))
-                embed.add_field(name="🤣 Emojis", value=f"{len(guild.emojis)}/{guild.emoji_limit}")
-                embed.add_field(name="💎 Boost Tier", value=f"Tier {guild.premium_tier} ({guild.premium_subscription_count} Boosts)")
-                embed.add_field(name="👑 Owner", value=str(guild.owner))
-                embed.add_field(name="🔗 Invite", value=f"[Click to join!]({invite.url})")
-                embed.set_thumbnail(url=guild.icon_url_as(static_format="png"))
-                embed.set_footer(text=f"Powered by • {self.config['bot_name']}")
-
 
                 await webhook.send(
                     username=self.config['bot_name'],
