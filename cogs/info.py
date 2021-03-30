@@ -38,7 +38,7 @@ class Info(commands.Cog):
     @commands.guild_only()
     @commands.command(aliases=["add"])
     async def invite(self, ctx):
-        return await ctx.send(embed=Embeds(f"[Click here to invite me!](https://discord.com/api/oauth2/authorize?client_id={self.bot.user.id}&permissions=537152577&scope=bot)"))
+        await ctx.send(embed=discord.Embed(title="Invte me to your server!", description=f"[Click here to invite me!](https://discord.com/api/oauth2/authorize?client_id={self.bot.user.id}&permissions=537152577&scope=bot)", color=discord.Color.green()))
 
 def setup(bot):
     bot.add_cog(Info(bot))
